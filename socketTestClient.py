@@ -1,14 +1,14 @@
-from socketClient import SocketClient
 import socket
+from socketClient import SocketClient
 import time
 
 if __name__ == '__main__':
     host = socket.gethostbyname('localhost')
-    port = 17001
+    port = 19001
     sc = SocketClient(host, port)
     sc.connect()
     for iter in range(5):
-        msg = str(iter) + "," + str(iter**2)
+        msg = str(iter) + "," + str(iter ** 2)
         sc.send(msg)
         time.sleep(1)
 

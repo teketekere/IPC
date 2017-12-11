@@ -1,10 +1,10 @@
 import socket
 
 
-class SocketClient:
+class SocketClient(object):
     def __init__(self, host, port):
         # host:localhost
-        # port:80
+        # port:any
         self.port = port
         self.host = host
 
