@@ -1,4 +1,5 @@
 // for UNIX, Linux
+// need -std=c++11 option
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <cstring>
@@ -12,15 +13,25 @@ private:
   struct sockaddr_in server;
 
 public:
-  SocketClient()
+  SocketClient(unsigned short portnum)
   {
     // ソケットの作成
     this->sock = socket(AF_INET, SOCK_STREAM, 0);
     // create structure for socket communication
     this->server.sin_family = AF_INET;
-    this->server.sin_port = htons(19001);
-    // server.sin_addr.s_addr = inet_addr("127.0.0.1");
-    this->server.sin_addr.s_addr = inet_addr("192.168.1.1");
+    this->server.sin_port = htons(portnum);
+    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    // this->server.sin_addr.s_addr = inet_addr("192.168.1.1");
+  }
+
+  SocketClient(std::string hostip, unsigned short portnum)
+  {
+    // ソケットの作成
+    this->sock = socket(AF_INET, SOCK_STREAM, 0);
+    // create structure for socket communication
+    this->server.sin_family = AF_INET;
+    this->server.sin_port = htons(portnum);
+    this->server.sin_addr.s_addr = inet_addr(hostip.c_str());
   }
 
   ~SocketClient()
@@ -69,7 +80,7 @@ public:
 int main()
 {
   // Code for debug
-  SocketClient *client = new SocketClient;
+  SocketClient *client = new SocketClient("192.168.1.1", 19001);
   client->connectServer();
   int count = 0;
   while(1)
