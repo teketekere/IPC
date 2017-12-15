@@ -5,54 +5,81 @@
 #include <sstream>
 #include <unistd.h>
 
-int main()
+class SocketClient
 {
-  int sockmode = 1;
-  if(sockmode == 1)
+private:
+  int sock;
+  struct sockaddr_in server;
+
+public:
+  SocketClient()
   {
-    struct sockaddr_in server;
-    int sock;
-    char buf[64];
-    int n;
-
     // ソケットの作成
-    sock = socket(AF_INET, SOCK_STREAM, 0);
+    this->sock = socket(AF_INET, SOCK_STREAM, 0);
     // create structure for socket communication
-    server.sin_family = AF_INET;
-    server.sin_port = htons(19001);
+    this->server.sin_family = AF_INET;
+    this->server.sin_port = htons(19001);
     // server.sin_addr.s_addr = inet_addr("127.0.0.1");
-    server.sin_addr.s_addr = inet_addr("192.168.1.1");
-
-    // connect to server
-    connect(sock, (struct sockaddr *)&server, sizeof(server));
-
-    int count = 0;
-    while(1)
-    {
-      memset(buf, 0, sizeof(buf));
-      std::stringstream sts;
-      std::string str;
-      if(count < 10)
-      {
-        str = std::to_string(count);
-        count++;
-      }
-      else
-      {
-        str = "end";
-      }
-
-      char sdata[64];
-      sts <<  str;
-      sts >> sdata;
-      const char* sdataconst = sdata;
-      write(sock, sdataconst, strlen(sdataconst));
-      usleep(1000000);
-      sts.clear();
-    }
-    // socketの終了
-    close(sock);
+    this->server.sin_addr.s_addr = inet_addr("192.168.1.1");
   }
 
- return 0;
+  ~SocketClient()
+  {
+    this->closeClient();
+  }
+
+  void connectServer()
+  {
+    try
+    {
+      connect(this->sock, (struct sockaddr *)&(this->server), sizeof(this->server));
+    }
+    catch(...)
+    {
+      throw;
+    }
+  }
+
+  void senddata(std::string data)
+  {
+    std::stringstream sts;
+    std::string str;
+    str = data;
+    char sdata[64];
+    sts <<  str;
+    sts >> sdata;
+    const char* sdataconst = sdata;
+    write(this->sock, sdataconst, strlen(sdataconst));
+    sts.clear();
+  }
+
+  void closeClient()
+  {
+    try
+    {
+      close(this->sock);
+    }
+    catch(...)
+    {
+      throw;
+    }
+  }
+};
+
+int main()
+{
+  // Code for debug
+  SocketClient *client = new SocketClient;
+  client->connectServer();
+  int count = 0;
+  while(1)
+  {
+    std::string senddata = (count < 10) ? std::to_string(count) : "end";
+    client->senddata(senddata);
+    usleep(1000000);
+    if(count >= 10) break;
+    count++;
+  }
+  delete(client);
+  return 0;
 }
