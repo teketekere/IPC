@@ -1,19 +1,9 @@
-#include <sys/types.h>
-//for windows
-/*
-#include <winsock2.h>
-#include <sstream>
-#include <iostream>
-#include <iomanip>
-#include <windows.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "unistd.h"
-*/
 // for UNIX, Linux
 #include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
+#include <cstring>
+#include <sstream>
+#include <unistd.h>
 
 int main()
 {
@@ -30,7 +20,8 @@ int main()
     // create structure for socket communication
     server.sin_family = AF_INET;
     server.sin_port = htons(19001);
-    server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    // server.sin_addr.s_addr = inet_addr("127.0.0.1");
+    server.sin_addr.s_addr = inet_addr("192.168.1.1");
 
     // connect to server
     connect(sock, (struct sockaddr *)&server, sizeof(server));
@@ -56,7 +47,7 @@ int main()
       sts >> sdata;
       const char* sdataconst = sdata;
       write(sock, sdataconst, strlen(sdataconst));
-      sleep(1);
+      usleep(1000000);
       sts.clear();
     }
     // socketの終了
