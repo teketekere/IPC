@@ -1,18 +1,19 @@
+import numpy as np
 import socket
 from socketClient import SocketClient
 import time
-import psutil
 
 
 if __name__ == '__main__':
-    host = socket.gethostbyname('localhost')
+    # host = socket.gethostbyname('localhost')
+    host = "192.168.1.1"
     port = 19001
     sc = SocketClient(host, port)
     sc.connect()
-    for _ in range(1000):
-        msg = str(psutil.cpu_percent())
+    for iter in range(1000):
+        msg = str(np.sin(float(iter)))
         sc.send(msg)
-        time.sleep(1)
+        time.sleep(0.25)
 
     msg = "end"
     sc.send(msg)

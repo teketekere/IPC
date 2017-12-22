@@ -8,7 +8,7 @@ class SocketServer(object):
         self.port = port
         self.host = host
 
-        self.buffsize = 1024
+        self.buffsize = 2048
         # client
         self.conn = None
         # server instance

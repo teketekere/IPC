@@ -13,6 +13,7 @@ private:
   struct sockaddr_in server;
 
 public:
+  // hostを指定しない場合はローカルホストにつなぐ
   SocketClient(unsigned short portnum)
   {
     // ソケットの作成

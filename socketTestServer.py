@@ -1,19 +1,22 @@
-import asyncio
+from RealtimePlot import RealtimePlot
 import socket
 from socketServer import SocketServer
 
 
-async def getReceivedValue(server):
+def getReceivedValue(server):
     return server.read()
 
 
-async def printReceivedValue(server, loop):
+def printReceivedValue(server):
+    rtP = RealtimePlot(interval=0.25, x_range=5)
+    rtP.initializeFig()
     while True:
-        data = await getReceivedValue(ss)
+        data = getReceivedValue(ss)
         if(validateData(data)):
+            data = str(data).split(",")
             print(data)
+            rtP.updateFig(data)
         else:
-            loop.stop()
             break
 
 
@@ -35,7 +38,5 @@ if __name__ == '__main__':
     port = 19001
     ss = SocketServer(host, port)
     ss.open()
-    loop = asyncio.get_event_loop()
-    asyncio.ensure_future(printReceivedValue(ss, loop))
-    loop.run_forever()
+    printReceivedValue(ss)
     ss.close()
