@@ -5,12 +5,12 @@ import time
 
 
 if __name__ == '__main__':
-    # host = socket.gethostbyname('localhost')
-    host = "192.168.1.1"
+    host = socket.gethostbyname('localhost')
+    # host = "192.168.1.1"
     port = 19001
     sc = SocketClient(host, port)
     sc.connect()
-    for iter in range(1000):
+    for iter in range(20000):
         msg = str(np.sin(float(iter)))
         sc.send(msg)
         time.sleep(0.25)
